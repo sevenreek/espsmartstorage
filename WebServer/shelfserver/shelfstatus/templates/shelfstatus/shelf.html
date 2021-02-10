@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>SB Admin 2 - Dashboard</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="{% static 'shelfstatus/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+
+  <!-- Custom styles for this template-->
+  <link href="{% static 'shelfstatus/css/sb-admin-2.css' %}" rel="stylesheet">
+  <link href="{% static 'shelfstatus/css/smartshelves.css' %}" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+  
+    {% include 'shelfstatus/sidebar.html' %}
+    
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+          <!-- Sidebar Toggle (Topbar) -->
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <i class="fa fa-bars"></i>
+          </button>
+
+         
+
+          <!-- Topbar Navbar -->
+          <ul class="navbar-nav ml-auto">
+
+     
+
+            <!-- Nav Item - User Information -->
+            <li class="nav-item dropdown no-arrow">
+
+              <!-- Dropdown - User Information -->
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="#">
+                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Profile
+                </a>
+                <a class="dropdown-item" href="#">
+                  <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Settings
+                </a>
+                <a class="dropdown-item" href="#">
+                  <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Activity Log
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Logout
+                </a>
+              </div>
+            </li>
+
+          </ul>
+
+        </nav>
+        <!-- End of Topbar -->
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">{{shelf.name}}</h1>
+            <!--<a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>-->
+          </div>
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Temperature</div>
+                      <div id="temperature" class="h5 mb-0 font-weight-bold text-gray-800">-</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-thermometer-half fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Pressure</div>
+                      <div id="pressure" class="h5 mb-0 font-weight-bold text-gray-800">-</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-tachometer-alt fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            
+
+            <!-- Pending Requests Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Humidity</div>
+                      <div id="humidity" class="h5 mb-0 font-weight-bold text-gray-800">-</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-tint fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Content Row -->
+
+          <div class="row">
+
+            {% for spot in shelf.productspot_set.all %}
+            <div class="col-xl-2 col-lg-4 col-sm-6 mb-4">
+              <div class="card bg-light text-black shadow">
+                <div class="stock-card-body">
+                  <div class="stock-container">
+                    {% if spot.last_tag %} 
+                      <img id="spot-{{spot.position}}-bg" src="{% static 'shelfstatus/img/products/' %}{{spot.last_tag.relation.product.id}}.jpg"  class="bg">
+                      <img id="spot-{{spot.position}}-level" src="{% static 'shelfstatus/img/products/' %}{{spot.last_tag.relation.product.id}}.jpg"  class="level">
+                      <div style="display: none;" id="spot-{{spot.position}}-empty" class="empty bg">EMPTY</div>
+                    {% else %}
+                      <img style="display: none;" id="spot-{{spot.position}}-bg" src="{% static 'shelfstatus/img/products/' %}{{spot.last_tag.relation.product.id}}.jpg"  class="bg">
+                      <img style="display: none;" id="spot-{{spot.position}}-level" src="{% static 'shelfstatus/img/products/' %}{{spot.last_tag.relation.product.id}}.jpg"  class="level">
+                      <div class="empty bg" id="spot-{{spot.position}}-empty">EMPTY</div>
+                    {% endif %}
+                        <div class="menu" style="display:flex; flex-wrap:wrap; position:absolute;  overflow:hidden;  width:50%; height:50%; border-radius:50%;">
+                          <a class="wheelnav-element " onclick="toggleLed({{spot.position}})"><i class="fas fa-lightbulb text-white"></i></a>
+                          <a class="wheelnav-element " onclick="freeLastTag({{spot.position}})"><i class="fas fa-unlink text-white" ></i></a>
+                          <a class="wheelnav-element " onclick="tare({{spot.position}})"><i class="fas fa-balance-scale text-white"></i></a>
+                          <a class="wheelnav-element " onclick="calibrate({{spot.position}})"><i class="fas fa-ruler text-white" ></i></a>
+                          <!--<nav class="circle-menu">      
+                            <ul>
+                              <li><a href="#"></a></li>
+                              <li><a href="#"></a></li>
+                              <li><a href="#"></a></li>
+                              <li><a href="#"></a></li>
+                            </ul>
+                          </nav>-->
+                        </div>
+                      <i id="spot-{{spot.position}}-noinfo" class="fas fa-question-circle text-primary no-info"></i>
+                  </div>
+                  <div id="spot-{{spot.position}}-name" class="stock-name">{% if spot.last_tag %}{{spot.last_tag.relation.product.name}}{% else %}-{% endif %}</div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+           
+   
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span>Copyright &copy; Your Website 2020</span>
+          </div>
+        </div>
+      </footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Logout Modal-->
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="login.html">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+     MQTT_BROKER_IP = "{{ mqtt_config.websockets_broker|default:"localhost" }}";
+     MQTT_WEBSOCKETS_PORT = {{ mqtt_config.websockets_port|default:9001 }};
+     MQTT_CLIENT_NAME = "webclient_{{ mqtt_config.client_name|default:"webclient" }}";
+     MQTT_SHELF_ID = {{ shelf.id }};
+     SHELF_SPOTS = {{ product_spots_js|safe }};
+     CSRF_TOKEN = '{{ csrf_token }}';
+     PRODUCT_IMAGES_DIR = '{% static 'shelfstatus/img/products/' %}'
+  </script>
+  <!-- Bootstrap core JavaScript-->
+  
+  <script src="{% static 'shelfstatus/vendor/jquery/jquery.min.js' %}"></script>
+  
+  <script src="{% static 'shelfstatus/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="{% static 'shelfstatus/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="{% static 'shelfstatus/js/sb-admin-2.min.js' %}"></script>
+
+  <script src="{% static 'shelfstatus/js/paho-mqtt.js' %}"></script>
+  <!-- Page level custom scripts -->
+
+  <script src="{% static 'shelfstatus/js/shelf.js' %}"></script>
+</body>
+
+</html>
